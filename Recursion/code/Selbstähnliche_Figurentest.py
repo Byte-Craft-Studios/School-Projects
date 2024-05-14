@@ -42,10 +42,39 @@ class App():
             self.turtle.forward(lenght_2)
             self.turtle.left(winkel_2)
     
+    def quadratpflanze(self, lenght=200):
+        winkel = 90
+        lenght_2 = lenght / 3
+        
+        if lenght >= 1:
+            self.turtle.right(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.right(winkel)
+            self.quadratpflanze(lenght_2)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.right(winkel)
+            self.quadratpflanze(lenght_2)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.right(winkel)
+            self.quadratpflanze(lenght_2)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.left(winkel)
+            self.turtle.forward(lenght)
+            self.turtle.left(winkel)
+    
     def run(self):
         
         start_time = time.time()
-        self.quadratbaum()
+        self.quadratpflanze()
         end_time = time.time()
         
         print(f'RUNTIME: {end_time - start_time}')
