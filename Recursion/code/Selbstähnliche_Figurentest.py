@@ -51,24 +51,15 @@ class App():
             self.turtle.forward(lenght)
             self.turtle.left(winkel)
             self.turtle.forward(lenght)
-            self.turtle.right(winkel)
-            self.quadratpflanze(lenght_2)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
-            self.turtle.right(winkel)
-            self.quadratpflanze(lenght_2)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
-            self.turtle.right(winkel)
-            self.quadratpflanze(lenght_2)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
-            self.turtle.left(winkel)
-            self.turtle.forward(lenght)
+            
+            for i in range(3):
+                self.turtle.right(winkel)
+                self.quadratpflanze(lenght_2)
+                self.turtle.left(winkel)
+                self.turtle.forward(lenght)
+                self.turtle.left(winkel)
+                self.turtle.forward(lenght)
+            
             self.turtle.left(winkel)
     
     def run(self):
