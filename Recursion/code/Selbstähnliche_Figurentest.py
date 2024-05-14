@@ -30,14 +30,13 @@ class App():
             self.turtle.forward(lenght_2)
             self.turtle.left(winkel_2)
             self.turtle.forward(lenght)
-            self.turtle.right(winkel_1)
-            self.quadratbaum(lenght_2)
-            self.turtle.left(winkel_1 + winkel_2)
-            self.turtle.forward(lenght)
-            self.turtle.right(winkel_1)
-            self.quadratbaum(lenght_2)
-            self.turtle.left(winkel_1 + winkel_2)
-            self.turtle.forward(lenght)
+            
+            for i in range(2):
+                self.turtle.right(winkel_1)
+                self.quadratbaum(lenght_2)
+                self.turtle.left(winkel_1 + winkel_2)
+                self.turtle.forward(lenght)
+            
             self.turtle.left(winkel_2)
             self.turtle.forward(lenght_2)
             self.turtle.left(winkel_2)
@@ -65,7 +64,7 @@ class App():
     def run(self):
         
         start_time = time.time()
-        self.quadratpflanze()
+        self.quadratbaum()
         end_time = time.time()
         
         print(f'RUNTIME: {end_time - start_time}')
