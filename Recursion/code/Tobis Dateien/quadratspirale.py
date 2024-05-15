@@ -9,7 +9,6 @@ class Square_Spiral():
         self.tur.penup()
         self.tur.goto(100,100)
         self.tur.pendown()
-        # self.tur.setheading(0)
     
     def draw(self, value):
         if value < 10:
@@ -23,7 +22,6 @@ class Square_Spiral():
         self.tur.back(value)
         self.tur.left(135)
         self.draw(value/1.3)
-        
     
 if __name__ == '__main__':
     app = Square_Spiral()
@@ -31,5 +29,4 @@ if __name__ == '__main__':
     app.draw(200)
     stop = time()
     print(f'RUNTIME: ~{round(stop-start, 2)}s')
-    # app.tur.hideturtle()
     done()
