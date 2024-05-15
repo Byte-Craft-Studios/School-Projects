@@ -87,9 +87,7 @@ class App():
         
         print(f'RUNTIME: {end_time - start_time}')
         
-        time.sleep(50)
-        
-        self.turtle.done()
+        done()
 
 # __________ main code __________
 if __name__ == "__main__":
