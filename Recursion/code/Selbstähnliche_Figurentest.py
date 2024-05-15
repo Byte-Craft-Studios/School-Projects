@@ -100,8 +100,6 @@ class App():
         
         print(f'RUNTIME: {end_time - start_time}')
         
-        time.sleep(50)
-        
         done()
 
 # __________ main code __________
