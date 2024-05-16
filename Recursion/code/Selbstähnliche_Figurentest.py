@@ -64,7 +64,6 @@ class App():
     def quadratspirale(self, lenght=200):
         winkel = 90
         winkel_2 = 35
-        lenght_2 = lenght / 2
         lenght_3 = lenght * 0.8
         
         if lenght >= 5:
@@ -79,10 +78,24 @@ class App():
             
             self.turtle.left(winkel)
     
+    def schachtelhalm(self, lenght=100):
+        winkel = 45
+        lenght_2 = lenght / 2
+        
+        if lenght >= 20:
+            self.turtle.forward(lenght)
+            self.turtle.right(winkel)
+            self.schachtelhalm(lenght_2)
+            self.turtle.left(winkel*2)
+            self.schachtelhalm(lenght_2)
+            self.turtle.right(winkel)
+            self.turtle.forward(lenght_2)
+            self.schachtelhalm(lenght_2)
+    
     def run(self):
         
         start_time = time.time()
-        self.quadratspirale()
+        self.schachtelhalm()
         end_time = time.time()
         
         print(f'RUNTIME: {end_time - start_time}')
