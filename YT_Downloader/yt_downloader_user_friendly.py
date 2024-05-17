@@ -5,6 +5,9 @@ from tkinter.filedialog import askdirectory
 import pytube
 from PIL import Image
 from tkinter import messagebox
+import threading
+
+import pytube.exceptions
 
 class App():
     def __init__(self):
@@ -14,7 +17,7 @@ class App():
         self.root.resizable(False, False)
         
         self.root.bind("<Escape>", quit)
-        self.root.bind("<Enter>", self.logic)
+        self.root.bind("<Return>", self.logic)
         
         self.directory_name = os.getcwd()
         self.surface()
@@ -66,13 +69,23 @@ class App():
         self.progressbar.set(percentage * 100)
         self.p_percentage.configure(text=f"{percentage * 100:.2f}%")
     
-    def logic(self):
+    def logic(self, event=None):
         try:
+            self.progressbar.set(0.0)
+            self.p_percentage.configure(text='0%')
+            # self.button.configure(hover_color='gray')
             url = self.link.get()
-            yt = pytube.YouTube(url, on_progress=self.update_progress)
+            yt = pytube.YouTube(url)
+            # yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
             self.stream = yt.streams.get_highest_resolution()
             self.file_name = os.path.join(self.directory_name, yt.title + ".mp4")
-            self.stream.download(output_path=self.directory_name, filename=yt.title+".mp4", filename_prefix="")
+            threading.Thread(target=self.stream.download, args=(self.directory_name, yt.title+".mp4", "")).start()
+            while threading.active_count() != 1:
+                yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
+                self.button.configure(cursor='no')
+                self.root.update()
+                self.root.update_idletasks()
+            # self.stream.download(output_path=self.directory_name, filename=yt.title+".mp4", filename_prefix="")
             self.finish_layer.configure(text='Video Downloaded', text_color='green')
             messagebox.showinfo("Download Complete", "Download complete!")
         
@@ -88,7 +101,7 @@ class App():
             self.finish_layer.configure(text='Age restricted', text_color='red')
             messagebox.showerror("Error", "Age restricted video")
         
-        except pytube.exceptions.MembersOnlyError:
+        except pytube.exceptions.MembersOnly:
             self.finish_layer.configure(text='Members only', text_color='red')
             messagebox.showerror("Error", "Members only video")
         
@@ -97,6 +110,7 @@ class App():
             self.finish_layer.configure(text='Invalid URL', text_color='red')
             messagebox.showerror("Error", "Invalid URL")
         
+        # self.button.configure(hover_color='blue')
         self.progressbar.set(1.0)
         self.p_percentage.configure(text='100%')
         
