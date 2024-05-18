@@ -17,7 +17,7 @@ class App():
         self.root.resizable(False, False)
         
         self.root.bind("<Escape>", quit)
-        self.root.bind("<Return>", self.logic)
+        self.root.bind("<Return>", func=lambda x: threading.Thread(target=self.logic).start())
         
         self.directory_name = os.getcwd()
         self.surface()
@@ -50,7 +50,7 @@ class App():
         self.progressbar.pack(padx=10, pady=10)
         
         # Download Button
-        self.button = ttk.CTkButton(self.root, text="Download", command=self.logic)
+        self.button = ttk.CTkButton(self.root, text="Download", command=lambda: threading.Thread(target=self.logic).start())
         self.button.pack(padx=10, pady=30)
         
         # Finish Label
@@ -70,22 +70,20 @@ class App():
         # before it was percentage*100 but the progressbar already operates with percentages
         self.p_percentage.configure(text=f"{percentage * 100:.2f}%")
     
-    def logic(self, event=None):
+    def logic(self):
         try:
             self.progressbar.set(0.0)
             self.p_percentage.configure(text='0%')
             self.button.configure(cursor='no')
-            self.finish_layer.configure(text='')
+            self.finish_layer.configure(text='Pending...',text_color='white')
             
             url = self.link.get()
             yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
             self.stream = yt.streams.get_highest_resolution()
             self.file_name = os.path.join(self.directory_name, yt.title + ".mp4")
-            threading.Thread(target=self.stream.download, args=(self.directory_name, yt.title+".mp4", "")).start()
+            self.finish_layer.configure(text='Downloading...')
+            self.stream.download(self.directory_name, yt.title+".mp4", "")
             
-            while threading.active_count() != 1:
-                self.root.update()
-                self.root.update_idletasks()
             self.button.configure(cursor='arrow')
             self.progressbar.set(1.0)
             self.p_percentage.configure(text='100%')
