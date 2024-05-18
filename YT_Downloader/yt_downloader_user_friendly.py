@@ -16,7 +16,7 @@ class App():
         self.root.title("Youtube Downloader")
         self.root.resizable(False, False)
         
-        self.root.bind("<Escape>", quit)
+        self.root.bind("<Escape>", quit) # have to use other closing/breaking method
         self.root.bind("<Return>", func=lambda x: threading.Thread(target=self.logic).start())
         
         self.directory_name = os.getcwd()
@@ -120,6 +120,9 @@ class App():
 
 
 # __________ main code __________
-if __name__ == "__main__":
-    app = App()
-    app.run()
+app=App()
+app.run()
+
+# if __name__ == "__main__":
+#     app = App()
+#     app.run()
