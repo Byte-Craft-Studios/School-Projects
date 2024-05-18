@@ -62,30 +62,33 @@ class App():
         self.save_instructor.configure(text=f'Where do you want to save your file? (Current: "{self.directory_name}")')
         messagebox.showinfo("Directory Changed", f"Directory changed to {self.directory_name}")
     
-    def update_progress(self, stream, chunk, file_handle, bytes_remaining):
+    def update_progress(self, stream, size, bytes_remaining): # removed file_handle
         total_size = stream.filesize
         bytes_downloaded = total_size - bytes_remaining
         percentage = bytes_downloaded / total_size
-        self.progressbar.set(percentage * 100)
+        self.progressbar.set(value=percentage) 
+        # before it was percentage*100 but the progressbar already operates with percentages
         self.p_percentage.configure(text=f"{percentage * 100:.2f}%")
     
     def logic(self, event=None):
         try:
             self.progressbar.set(0.0)
             self.p_percentage.configure(text='0%')
-            # self.button.configure(hover_color='gray')
+            self.button.configure(cursor='no')
+            self.finish_layer.configure(text='')
+            
             url = self.link.get()
-            yt = pytube.YouTube(url)
-            # yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
+            yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
             self.stream = yt.streams.get_highest_resolution()
             self.file_name = os.path.join(self.directory_name, yt.title + ".mp4")
             threading.Thread(target=self.stream.download, args=(self.directory_name, yt.title+".mp4", "")).start()
+            
             while threading.active_count() != 1:
-                yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
-                self.button.configure(cursor='no')
                 self.root.update()
                 self.root.update_idletasks()
-            # self.stream.download(output_path=self.directory_name, filename=yt.title+".mp4", filename_prefix="")
+            self.button.configure(cursor='arrow')
+            self.progressbar.set(1.0)
+            self.p_percentage.configure(text='100%')
             self.finish_layer.configure(text='Video Downloaded', text_color='green')
             messagebox.showinfo("Download Complete", "Download complete!")
         
@@ -110,7 +113,7 @@ class App():
             self.finish_layer.configure(text='Invalid URL', text_color='red')
             messagebox.showerror("Error", "Invalid URL")
         
-        # self.button.configure(hover_color='blue')
+        self.button.configure(cursor='hand2')
         self.progressbar.set(1.0)
         self.p_percentage.configure(text='100%')
         
