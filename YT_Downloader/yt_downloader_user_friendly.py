@@ -16,7 +16,7 @@ class App():
         self.root.title("Youtube Downloader")
         self.root.resizable(False, False)
         
-        self.root.bind("<Escape>", quit) # have to use other closing/breaking method
+        self.root.bind("<Escape>", lambda x: quit())
         self.root.bind("<Return>", func=lambda x: threading.Thread(target=self.logic).start())
         
         self.directory_name = os.getcwd()
@@ -75,6 +75,7 @@ class App():
             self.progressbar.set(0.0)
             self.p_percentage.configure(text='0%')
             self.button.configure(cursor='no')
+            self.button.configure(hover=False)
             self.finish_layer.configure(text='Pending...',text_color='white')
             
             url = self.link.get()
@@ -111,6 +112,7 @@ class App():
             self.finish_layer.configure(text='Invalid URL', text_color='red')
             messagebox.showerror("Error", "Invalid URL")
         
+        self.button.configure(hover=True)
         self.button.configure(cursor='hand2')
         self.progressbar.set(1.0)
         self.p_percentage.configure(text='100%')
