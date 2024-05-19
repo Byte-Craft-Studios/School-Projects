@@ -6,7 +6,6 @@ import pytube
 from PIL import Image
 from tkinter import messagebox
 import threading
-
 import pytube.exceptions
 
 class App():
