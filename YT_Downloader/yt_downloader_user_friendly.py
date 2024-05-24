@@ -4,7 +4,9 @@ import os
 from tkinter.filedialog import askdirectory
 from tkinter.constants import DISABLED, NORMAL
 import pytube
-from PIL import Image
+from PIL import ImageTk, Image
+import urllib.request
+import io
 import threading
 
 import pytube.exceptions
@@ -42,6 +44,10 @@ class App():
         self.save = ttk.CTkButton(self.root, text='Select directory to save', command=self.ask_directory)
         self.save.pack(padx=10, pady=10)
         
+        # Thumbnail
+        self.thumbnail = ttk.CTkLabel(self.root, text=None)
+        self.thumbnail.pack(padx=10, pady=10)
+        
         # Progress Label
         self.p_percentage = ttk.CTkLabel(self.root, text="0%")
         self.p_percentage.pack()
@@ -59,10 +65,37 @@ class App():
         self.finish_layer = ttk.CTkLabel(self.root, text='')
         self.finish_layer.pack(padx=10, pady=10)
     
+    def display_thumbnail(self, link=None):
+        print('slfj ')
+        if link == None:
+            url = self.link.get()
+            yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
+            link = yt.thumbnail_url
+        
+        # major source: https://www.tutorialspoint.com/displaying-images-from-url-in-tkinter 
+        try:
+            with urllib.request.urlopen(link) as u:
+                raw_data = u.read()
+        except Exception as e:
+            print(f"Error fetching image: {e}")
+            return
+
+        try:
+            image = Image.open(io.BytesIO(raw_data))
+            photo = ImageTk.PhotoImage(image)
+            # photo = ImageTk.ttk.Ctk.PhotoImage(photo) # can't use ttk.Ctk.PhotoImage because PIL doesn't support it (I thin)
+            self.thumbnail.configure(image=photo)
+        except Exception as e:
+            print(f"Error opening image: {e}")
+            return
+    
+    
     def ask_directory(self):
         self.directory_name = askdirectory()
         self.save_instructor.configure(text=f'Where do you want to save your file? (Current: "{self.directory_name}")')
         self.finish_layer.configure(text=f"Directory changed to {self.directory_name}")
+        
+        threading.Thread(daemon=True, target=self.display_thumbnail).start()
     
     def update_progress(self, stream, size, bytes_remaining): # removed file_handle
         total_size = stream.filesize
@@ -81,14 +114,15 @@ class App():
             
             url = self.link.get()
             yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
+            threading.Thread(daemon=True, target=self.display_thumbnail, args=(yt.thumbnail_url,)).start()
             self.stream = yt.streams.get_highest_resolution()
             self.file_name = os.path.join(self.directory_name, yt.title + ".mp4")
             self.finish_layer.configure(text='Downloading...')
             self.stream.download(self.directory_name, yt.title+".mp4", "")
             
-            self.button.configure(cursor='arrow')
-            self.progressbar.set(1.0)
-            self.p_percentage.configure(text='100%')
+            # self.button.configure(cursor='arrow')
+            # self.progressbar.set(1.0)
+            # self.p_percentage.configure(text='100%')
             self.finish_layer.configure(text='Video Downloaded', text_color='green')
         
         except pytube.exceptions.VideoUnavailable:
