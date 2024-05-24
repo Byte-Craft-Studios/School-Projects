@@ -5,7 +5,6 @@ from tkinter.filedialog import askdirectory
 from tkinter.constants import DISABLED, NORMAL
 import pytube
 from PIL import Image
-from tkinter import messagebox
 import threading
 
 import pytube.exceptions
@@ -32,6 +31,8 @@ class App():
         self.link = ttk.CTkEntry(self.root, width=550)
         self.link.pack(padx=10, pady=40)
         self.link.focus_set()
+        
+        self.link.insert(0,'https://www.youtube.com/watch?v=EEKugIYBEUo')
         
         # Save Directory Label
         self.save_instructor = ttk.CTkLabel(self.root, text=f'Where do you want to save your file? (Default: "{self.directory_name}")')
@@ -61,7 +62,7 @@ class App():
     def ask_directory(self):
         self.directory_name = askdirectory()
         self.save_instructor.configure(text=f'Where do you want to save your file? (Current: "{self.directory_name}")')
-        messagebox.showinfo("Directory Changed", f"Directory changed to {self.directory_name}")
+        self.finish_layer.configure(text=f"Directory changed to {self.directory_name}")
     
     def update_progress(self, stream, size, bytes_remaining): # removed file_handle
         total_size = stream.filesize
@@ -89,32 +90,27 @@ class App():
             self.progressbar.set(1.0)
             self.p_percentage.configure(text='100%')
             self.finish_layer.configure(text='Video Downloaded', text_color='green')
-            messagebox.showinfo("Download Complete", "Download complete!")
         
         except pytube.exceptions.VideoUnavailable:
             self.finish_layer.configure(text='Video unavailable', text_color='red')
-            messagebox.showerror("Error", "Video unavailable")
-        
+            
         except pytube.exceptions.LiveStreamError:
             self.finish_layer.configure(text='Live stream', text_color='red')
-            messagebox.showerror("Error", "Live stream is not supported")
         
         except pytube.exceptions.AgeRestrictedError:
             self.finish_layer.configure(text='Age restricted', text_color='red')
-            messagebox.showerror("Error", "Age restricted video")
         
         except pytube.exceptions.MembersOnly:
             self.finish_layer.configure(text='Members only', text_color='red')
-            messagebox.showerror("Error", "Members only video")
         
         except Exception as e:
             print(e)
             self.finish_layer.configure(text='Invalid URL', text_color='red')
-            messagebox.showerror("Error", "Invalid URL")
         
         self.button.configure(hover=True, cursor='hand2', state=NORMAL)
         self.progressbar.set(1.0)
         self.p_percentage.configure(text='100%')
+        self.root.lift()
         
     def run(self):
         self.root.mainloop()
@@ -124,6 +120,6 @@ class App():
 app=App()
 app.run()
 
-# if __name__ == "__main__":
+# if __name__ == "__main__": # not practical when converting to .exe
 #     app = App()
 #     app.run()
