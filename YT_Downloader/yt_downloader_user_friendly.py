@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ttk
 import os
 from tkinter.filedialog import askdirectory
+from tkinter.constants import DISABLED, NORMAL
 import pytube
 from PIL import Image
 from tkinter import messagebox
@@ -17,7 +18,7 @@ class App():
         self.root.resizable(False, False)
         
         self.root.bind("<Escape>", lambda x: quit())
-        self.root.bind("<Return>", func=lambda x: threading.Thread(target=self.logic).start())
+        self.root.bind("<Return>", func=lambda x: threading.Thread(daemon=True, target=self.logic).start())
         
         self.directory_name = os.getcwd()
         self.surface()
@@ -50,7 +51,7 @@ class App():
         self.progressbar.pack(padx=10, pady=10)
         
         # Download Button
-        self.button = ttk.CTkButton(self.root, text="Download", command=lambda: threading.Thread(target=self.logic).start())
+        self.button = ttk.CTkButton(self.root, text="Download", command=lambda: threading.Thread(daemon=True, target=self.logic).start())
         self.button.pack(padx=10, pady=30)
         
         # Finish Label
@@ -74,8 +75,7 @@ class App():
         try:
             self.progressbar.set(0.0)
             self.p_percentage.configure(text='0%')
-            self.button.configure(cursor='no')
-            self.button.configure(hover=False)
+            self.button.configure(cursor='no', hover=False, state=DISABLED)
             self.finish_layer.configure(text='Pending...',text_color='white')
             
             url = self.link.get()
@@ -112,8 +112,7 @@ class App():
             self.finish_layer.configure(text='Invalid URL', text_color='red')
             messagebox.showerror("Error", "Invalid URL")
         
-        self.button.configure(hover=True)
-        self.button.configure(cursor='hand2')
+        self.button.configure(hover=True, cursor='hand2', state=NORMAL)
         self.progressbar.set(1.0)
         self.p_percentage.configure(text='100%')
         
