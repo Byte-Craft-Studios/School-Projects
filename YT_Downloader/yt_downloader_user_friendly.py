@@ -8,18 +8,17 @@ from PIL import ImageTk, Image
 import urllib.request
 import io
 import threading
-
 import pytube.exceptions
 
 class App():
     def __init__(self):
         self.root = ttk.CTk()
-        self.root.geometry("740x700")
         self.root.title("Youtube Downloader")
         self.root.resizable(False, False)
         
         self.root.bind("<Escape>", lambda x: quit())
         self.root.bind("<Return>", func=lambda x: threading.Thread(daemon=True, target=self.logic).start())
+        self.root.bind('<Button-1>', lambda x: threading.Thread(daemon=True, target=self.display_thumbnail()).start())
         
         self.directory_name = os.getcwd()
         self.surface()
@@ -44,10 +43,6 @@ class App():
         self.save = ttk.CTkButton(self.root, text='Select directory to save', command=self.ask_directory)
         self.save.pack(padx=10, pady=10)
         
-        # Thumbnail
-        self.thumbnail = ttk.CTkLabel(self.root, text=None)
-        self.thumbnail.pack(padx=10, pady=10)
-        
         # Progress Label
         self.p_percentage = ttk.CTkLabel(self.root, text="0%")
         self.p_percentage.pack()
@@ -59,14 +54,17 @@ class App():
         
         # Download Button
         self.button = ttk.CTkButton(self.root, text="Download", command=lambda: threading.Thread(daemon=True, target=self.logic).start())
-        self.button.pack(padx=10, pady=30)
+        self.button.pack(padx=10)
         
         # Finish Label
         self.finish_layer = ttk.CTkLabel(self.root, text='')
         self.finish_layer.pack(padx=10, pady=10)
+        
+        # Thumbnail
+        self.thumbnail = ttk.CTkLabel(self.root, text='Thumbnail', width=320, height=180)
+        self.thumbnail.pack(padx=10, pady=10)
     
     def display_thumbnail(self, link=None):
-        print('slfj ')
         if link == None:
             url = self.link.get()
             yt = pytube.YouTube(url, on_progress_callback=self.update_progress)
@@ -79,11 +77,11 @@ class App():
         except Exception as e:
             print(f"Error fetching image: {e}")
             return
-        
+
         try:
             image = Image.open(io.BytesIO(raw_data))
             photo = ttk.CTkImage(image, size=(320,180))
-            self.thumbnail.configure(image=photo)
+            self.thumbnail.configure(image=photo, text='')
         except Exception as e:
             print(f"Error opening image: {e}")
             return
