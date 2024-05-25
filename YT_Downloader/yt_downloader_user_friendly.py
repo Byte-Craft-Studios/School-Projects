@@ -14,7 +14,7 @@ import pytube.exceptions
 class App():
     def __init__(self):
         self.root = ttk.CTk()
-        self.root.geometry("740x480")
+        self.root.geometry("740x700")
         self.root.title("Youtube Downloader")
         self.root.resizable(False, False)
         
@@ -79,16 +79,14 @@ class App():
         except Exception as e:
             print(f"Error fetching image: {e}")
             return
-
+        
         try:
             image = Image.open(io.BytesIO(raw_data))
-            photo = ImageTk.PhotoImage(image)
-            # photo = ImageTk.ttk.Ctk.PhotoImage(photo) # can't use ttk.Ctk.PhotoImage because PIL doesn't support it (I thin)
+            photo = ttk.CTkImage(image, size=(320,180))
             self.thumbnail.configure(image=photo)
         except Exception as e:
             print(f"Error opening image: {e}")
             return
-    
     
     def ask_directory(self):
         self.directory_name = askdirectory()
