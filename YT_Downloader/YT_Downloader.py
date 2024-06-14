@@ -161,9 +161,9 @@ class App():
 
 
 # __________ main code __________
-app=App()
-app.run()
+# app=App()
+# app.run()
 
-# if __name__ == "__main__": # not practical when converting to .exe
-#     app = App()
-#     app.run()
+if __name__ == "__main__": # not practical when converting to .exe
+    app = App()
+    app.run()
