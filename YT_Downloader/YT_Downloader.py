@@ -1,3 +1,7 @@
+# @Tobias L. 
+# @Jannis K.
+
+
 import tkinter as tk # user interface - principles
 import customtkinter as ttk # user interface - visuals, performance
 import os    # to get a standard directory to save to (working directory, les lines of code than other variants)
